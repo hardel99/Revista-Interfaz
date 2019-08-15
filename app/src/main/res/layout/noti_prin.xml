@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/atlos"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="?attr/colorPrimary"
+            android:minHeight="?attr/actionBarSize"
+            android:theme="?attr/actionBarTheme" />
+
+        <ImageView
+            android:id="@+id/imaco"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:adjustViewBounds="true"
+            app:srcCompat="@color/colorPrimaryDark" />
+
+        <TextView
+            android:id="@+id/titco"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="35sp"
+            android:textStyle="bold"
+            android:textColor="#131313"
+            android:padding="10dp"
+            android:text="Titulo" />
+
+        <TextView
+            android:id="@+id/subtit"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="20sp"
+            android:padding="10dp"
+            android:text="Subtitulo de es" />
+
+        <TextView
+            android:id="@+id/fey"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="16sp"
+            android:paddingLeft="8dp"
+            android:textStyle="italic"
+            android:text="0000/00/00" />
+
+        <TextView
+            android:id="@+id/catio"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="16sp"
+            android:paddingLeft="8dp"
+            android:layout_marginTop="3dp"
+            android:layout_marginBottom="7dp"
+            android:text="Categoria" />
+
+        <TextView
+            android:id="@+id/desc"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="El articulo entero, que no habias hecho en todo el mes pero crees que con un poco de trabaoj terminaras en una noche, aunque sabemos que es mentira"
+            android:textSize="16sp"
+            android:padding="8dp"/>
+    </LinearLayout>
+
+</ScrollView>
