@@ -31,5 +31,5 @@
             android:screenOrientation="portrait"
             android:parentActivityName=".MainActivity" />
     </application>
-
+    
 </manifest>
