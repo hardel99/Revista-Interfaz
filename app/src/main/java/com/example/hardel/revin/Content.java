@@ -9,14 +9,14 @@ import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 
-public class Content extends AppCompatActivity{
+public class Content extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.noti_prin);
 
-        Toolbar tool = (Toolbar) findViewById(R.id.atlos);
+        Toolbar tool = (Toolbar) findViewById(R.id.notice_toolbar);
 
         setSupportActionBar(tool);
         tool.setTitleTextColor(Color.WHITE);
@@ -30,22 +30,22 @@ public class Content extends AppCompatActivity{
 
         getSupportActionBar().setTitle(title);
 
-        TextView ja = (TextView) findViewById(R.id.titco);
-        ja.setText(title);
+        TextView titleText = (TextView) findViewById(R.id.title_full_notice);
+        titleText.setText(title);
 
-        TextView jaja = (TextView) findViewById(R.id.subtit);
-        jaja.setText(subtitle);
+        TextView subtitleText = (TextView) findViewById(R.id.subtitle_full_notice);
+        subtitleText.setText(subtitle);
 
-        TextView jajaja = (TextView) findViewById(R.id.fey);
-        jajaja.setText(date);
+        TextView dateText = (TextView) findViewById(R.id.date_full_notice);
+        dateText.setText(date);
 
-        TextView jajajaja = (TextView) findViewById(R.id.catio);
-        jajajaja.setText(category);
+        TextView catText = (TextView) findViewById(R.id.category_full_notice);
+        catText.setText(category);
 
-        TextView jajajajaja = (TextView) findViewById(R.id.desc);
-        jajajajaja.setText(desc);
+        TextView descText = (TextView) findViewById(R.id.desc_full_notice);
+        descText.setText(desc);
 
-        ImageView img = (ImageView) findViewById(R.id.imaco);
+        ImageView img = (ImageView) findViewById(R.id.full_image_preview);
         Picasso.with(this).load(imgPath).into(img);
     }
 }

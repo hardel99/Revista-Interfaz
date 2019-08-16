@@ -68,7 +68,7 @@ public class MainActivity extends AppCompatActivity {
         dailyFeed = (ListView) findViewById(R.id.news_list);
 
         resize = AnimationUtils.loadAnimation(this,R.anim.alpha);
-        fade = AnimationUtils.loadAnimation(this,R.anim.puff);
+        fade = AnimationUtils.loadAnimation(this,R.anim.fade);
 
         Toolbar t = (Toolbar) findViewById(R.id.main_toolbar);
         setSupportActionBar(t);
@@ -158,7 +158,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.serchiar, menu);
+        getMenuInflater().inflate(R.menu.search_bar, menu);
 
         return true;
     }
@@ -382,9 +382,9 @@ public class MainActivity extends AppCompatActivity {
 
             Notice n = noticeList.get(position);
 
-            ImageView preview = (ImageView) convertView.findViewById(R.id.qli);
-            TextView tw = (TextView) convertView.findViewById(R.id.titu);
-            TextView tw2 = (TextView) convertView.findViewById(R.id.subtitu);
+            ImageView preview = (ImageView) convertView.findViewById(R.id.img_preview);
+            TextView tw = (TextView) convertView.findViewById(R.id.title_preview);
+            TextView tw2 = (TextView) convertView.findViewById(R.id.subtitle_preview);
 
             Picasso.with(MainActivity.this).load(n.getImgPath()).into(preview);
             tw.setText(n.getTitle());

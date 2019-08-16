@@ -7,11 +7,11 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:orientation="vertical">
 
         <android.support.v7.widget.Toolbar
-            android:id="@+id/atlos"
+            android:id="@+id/notice_toolbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="?attr/colorPrimary"
@@ -19,54 +19,55 @@
             android:theme="?attr/actionBarTheme" />
 
         <ImageView
-            android:id="@+id/imaco"
+            android:id="@+id/full_image_preview"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:adjustViewBounds="true"
-            app:srcCompat="@color/colorPrimaryDark" />
+            app:srcCompat="@color/colorPrimaryDark"
+            android:contentDescription="@string/desc" />
 
         <TextView
-            android:id="@+id/titco"
+            android:id="@+id/title_full_notice"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textSize="35sp"
             android:textStyle="bold"
             android:textColor="#131313"
             android:padding="10dp"
-            android:text="Titulo" />
+            android:text="@string/titulo" />
 
         <TextView
-            android:id="@+id/subtit"
+            android:id="@+id/subtitle_full_notice"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textSize="20sp"
             android:padding="10dp"
-            android:text="Subtitulo de es" />
+            android:text="@string/subtitulo_de_es" />
 
         <TextView
-            android:id="@+id/fey"
+            android:id="@+id/date_full_notice"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textSize="16sp"
             android:paddingLeft="8dp"
             android:textStyle="italic"
-            android:text="0000/00/00" />
+            android:text="@string/deffault_date" />
 
         <TextView
-            android:id="@+id/catio"
+            android:id="@+id/category_full_notice"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textSize="16sp"
             android:paddingLeft="8dp"
             android:layout_marginTop="3dp"
             android:layout_marginBottom="7dp"
-            android:text="Categoria" />
+            android:text="@string/category" />
 
         <TextView
-            android:id="@+id/desc"
+            android:id="@+id/desc_full_notice"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="El articulo entero, que no habias hecho en todo el mes pero crees que con un poco de trabaoj terminaras en una noche, aunque sabemos que es mentira"
+            android:text="@string/generic_content"
             android:textSize="16sp"
             android:padding="8dp"/>
     </LinearLayout>

@@ -1,3 +1,11 @@
 <resources>
     <string name="app_name">RevIn</string>
+    <string name="titulo">Titulo</string>
+    <string name="subtitulo_de_es">Subtitulo de es</string>
+    <string name="desc">Image descripting notice</string>
+    <string name="deffault_date">0000/00/00</string>
+    <string name="category">Categoria</string>
+    <string name="generic_content">El articulo entero, que no habias hecho en todo el mes pero crees que con un poco de trabaoj terminaras en una noche, aunque sabemos que es mentira</string>
+    <string name="content_desc_preview">Main notice image preview</string>
+    <string name="subtitle_preview">Aqui no se que va a decir pero ni modo va</string>
 </resources>

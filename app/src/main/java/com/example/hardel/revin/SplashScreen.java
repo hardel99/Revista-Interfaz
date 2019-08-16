@@ -12,7 +12,7 @@ public class SplashScreen extends AppCompatActivity{
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.splat);
+        setContentView(R.layout.splash_screen);
 
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
@@ -23,7 +23,7 @@ public class SplashScreen extends AppCompatActivity{
         Animation anim = AnimationUtils.loadAnimation(this, R.anim.alpha);
         anim.reset();
 
-        ImageView iv = (ImageView) findViewById(R.id.shinin);
+        ImageView iv = (ImageView) findViewById(R.id.main_logo);
         iv.clearAnimation();
         iv.setAnimation(anim);
 

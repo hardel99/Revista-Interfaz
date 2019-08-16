@@ -19,7 +19,7 @@
             android:layout_width="?attr/actionBarSize"
             android:layout_height="?attr/actionBarSize"
             android:padding="25dp"
-            android:background="@mipmap/clous"/>
+            android:background="@mipmap/close"/>
 
         <EditText
             android:id="@+id/search_textbox"
