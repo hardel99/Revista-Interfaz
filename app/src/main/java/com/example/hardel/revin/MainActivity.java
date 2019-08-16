@@ -1,18 +1,12 @@
 package com.example.hardel.revin;
 
 import android.content.Intent;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteStatement;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -39,71 +33,68 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.FileInputStream;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
-    private List<nius> nuev=new ArrayList<nius>();
-    public final static String TIL="com.example.hardel.revin._TIT";
-    public final static String SUBT="com.example.hardel.revin._SUB";
-    public final static String CONT="com.example.hardel.revin._CON";
-    public final static String FAI="com.example.hardel.revin._FY";
-    public final static String CATER="com.example.hardel.revin._GATO";
-    public final static String IMA="com.example.hardel.revin._IM";
+    private List<Notice> noticeList = new ArrayList<>();
+    public final static String TITLE = "com.example.hardel.revin._TIT";
+    public final static String SUBTITLE = "com.example.hardel.revin._SUB";
+    public final static String DESCRIPTION = "com.example.hardel.revin._CON";
+    public final static String DATE = "com.example.hardel.revin._FY";
+    public final static String CATEGORY = "com.example.hardel.revin._GATO";
+    public final static String IMG = "com.example.hardel.revin._IM";
 
-    private TextView novo,dive,tren,arto,sayens,yey;
-    private ListView aja;
-    private EditText edt;
-    private Button claus;
-    private Animation resai,puf;
-    private MenuItem mi;
-    private String ha;
+    private TextView recentNews, entretainmentNews, trendNews, artNews, scienceNews, localNews;
+    private ListView dailyFeed;
+    private EditText searchBar;
+    private Button cancelSearch;
+    private Animation resize, fade;
+    private MenuItem menu;
+    private String searchMatch;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        loadining();
+        loadingData();
 
         setContentView(R.layout.activity_main);
 
-        edt= (EditText) findViewById(R.id.eti);
-        edt.setEnabled(false);
+        searchBar = (EditText) findViewById(R.id.search_textbox);
+        searchBar.setEnabled(false);
 
-        textagorias();
-        aja = (ListView) findViewById(R.id.weno);
+        filterCategories();
+        dailyFeed = (ListView) findViewById(R.id.news_list);
 
-        resai= AnimationUtils.loadAnimation(this,R.anim.alpha);
-        puf= AnimationUtils.loadAnimation(this,R.anim.puff);
+        resize = AnimationUtils.loadAnimation(this,R.anim.alpha);
+        fade = AnimationUtils.loadAnimation(this,R.anim.puff);
 
-        Toolbar tu = (Toolbar) findViewById(R.id.atles);
-        setSupportActionBar(tu);
+        Toolbar t = (Toolbar) findViewById(R.id.main_toolbar);
+        setSupportActionBar(t);
         getSupportActionBar().setTitle("Revista Interfaz");
-        tu.setTitleTextColor(Color.WHITE);
+        t.setTitleTextColor(Color.WHITE);
 
 
-        //getActuali(dut,"SELECT * FROM news ORDER BY ID DESC");
-
-        aja.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        dailyFeed.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                nius ni=nuev.get(position);
+                Notice n = noticeList.get(position);
 
-                Intent in=new Intent(MainActivity.this,conten.class);
-                in.putExtra(TIL,ni.getTit());
-                in.putExtra(SUBT,ni.getmimid());
-                in.putExtra(CONT,ni.getDescr());
-                in.putExtra(FAI,ni.getFecha());
-                in.putExtra(CATER,ni.getCate());
-                in.putExtra(IMA,ni.getPata());
+                Intent in = new Intent(MainActivity.this, Content.class);
+                in.putExtra(TITLE, n.getTitle());
+                in.putExtra(SUBTITLE, n.getDescription());
+                in.putExtra(DESCRIPTION, n.getSubtitle());
+                in.putExtra(DATE, n.getDate());
+                in.putExtra(CATEGORY, n.getCate());
+                in.putExtra(IMG, n.getImgPath());
+
                 startActivity(in);
             }
         });
     }
 
-    TextWatcher tw=new TextWatcher() {
+    TextWatcher tw = new TextWatcher() {
         @Override
         public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
@@ -111,40 +102,40 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public void onTextChanged(CharSequence s, int start, int before, int count) {
-            ha=s.toString();
-            RequestQueue requ= Volley.newRequestQueue(MainActivity.this);
+            searchMatch = s.toString();
+            RequestQueue request = Volley.newRequestQueue(MainActivity.this);
 
-            JsonObjectRequest jobs=new JsonObjectRequest(Request.Method.GET,
+            JsonObjectRequest jobs = new JsonObjectRequest(Request.Method.GET,
                     "https://revistainterfazgq.000webhostapp.com/scripts/guet.php",
                     null,
                     new Response.Listener<JSONObject>() {
                         @Override
                         public void onResponse(JSONObject response) {
                             try {
-                                JSONArray jara=response.getJSONArray("news");
-                                String taitai,subtaitai,deit,cateo,noti,ima;
-                                List<nius> suin= new ArrayList<nius>();
+                                JSONArray jsonArr = response.getJSONArray("news");
+                                String title, subtitle, detail, category, content, img;
+                                List<Notice> notices = new ArrayList<>();
 
-                                for(int i=0;i<jara.length();i++){
-                                    JSONObject gor=jara.getJSONObject(i);
+                                for(int i = 0; i < jsonArr.length(); i++) {
+                                    JSONObject jObj = jsonArr.getJSONObject(i);
 
-                                    taitai=gor.getString("Titulo");
-                                    subtaitai=gor.getString("Subtitulo");
-                                    deit=gor.getString("Fecha");
-                                    cateo=gor.getString("Categoria");
-                                    noti=gor.getString("Noticia");
-                                    ima=gor.getString("Imagen");
+                                    title = jObj.getString("Titulo");
+                                    subtitle = jObj.getString("Subtitulo");
+                                    detail = jObj.getString("Fecha");
+                                    category = jObj.getString("Categoria");
+                                    content = jObj.getString("Noticia");
+                                    img = jObj.getString("Imagen");
 
-                                    if(taitai.contains(ha)){
-                                        suin.add(new nius(taitai,subtaitai,deit,cateo,noti,ima));
+                                    if (title.contains(searchMatch)) {
+                                        notices.add(new Notice(title, subtitle, detail, category, content, img));
                                     }
                                 }
 
-                                nuev.clear();
-                                nuev=suin;
+                                noticeList.clear();
+                                noticeList = notices;
 
-                                ArrayAdapter<nius> an=new custom();
-                                aja.setAdapter(an);
+                                ArrayAdapter<Notice> an=new customComponent();
+                                dailyFeed.setAdapter(an);
                             } catch (JSONException e) {
                                 e.printStackTrace();
                             }
@@ -157,7 +148,7 @@ public class MainActivity extends AppCompatActivity {
                         }
                     });
 
-            requ.add(jobs);
+            request.add(jobs);
         }
 
         @Override
@@ -167,36 +158,36 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.serchiar,menu);
+        getMenuInflater().inflate(R.menu.serchiar, menu);
 
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        int ifi=item.getItemId();
-        mi=item;
+        int selectedItem = item.getItemId();
+        menu = item;
 
-        if(ifi==R.id.lup){
-            if(!edt.isEnabled()){
+        if(selectedItem == R.id.lup){
+            if(!searchBar.isEnabled()){
                 getSupportActionBar().setTitle("");
-                claus.setVisibility(View.VISIBLE);
+                cancelSearch.setVisibility(View.VISIBLE);
 
-                resai.reset();
-                claus.clearAnimation();
-                claus.setAnimation(resai);
+                resize.reset();
+                cancelSearch.clearAnimation();
+                cancelSearch.setAnimation(resize);
 
-                edt.setEnabled(true);
-                edt.setText("Buscar");
-                edt.setWidth(250);
+                searchBar.setEnabled(true);
+                searchBar.setText("Buscar");
+                searchBar.setWidth(250);
 
-                edt.addTextChangedListener(tw);
+                searchBar.addTextChangedListener(tw);
 
-                resai.reset();
-                edt.clearAnimation();
-                edt.setAnimation(resai);
+                resize.reset();
+                searchBar.clearAnimation();
+                searchBar.setAnimation(resize);
 
-                mi.setEnabled(false);
+                menu.setEnabled(false);
             }
             return true;
         }else{
@@ -204,147 +195,116 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void textagorias(){
-        novo = (TextView) findViewById(R.id.novo);
-        dive = (TextView) findViewById(R.id.dive);
-        tren = (TextView) findViewById(R.id.tren);
-        arto = (TextView) findViewById(R.id.arto);
-        sayens = (TextView) findViewById(R.id.sayens);
-        yey = (TextView) findViewById(R.id.yey);
+    private void filterCategories() {
+        recentNews = (TextView) findViewById(R.id.recent_added);
+        entretainmentNews = (TextView) findViewById(R.id.entretainment);
+        trendNews = (TextView) findViewById(R.id.trends);
+        artNews = (TextView) findViewById(R.id.art);
+        scienceNews = (TextView) findViewById(R.id.science);
+        localNews = (TextView) findViewById(R.id.local);
 
-        claus = (Button) findViewById(R.id.claus);
-        claus.setVisibility(View.GONE);
+        cancelSearch = (Button) findViewById(R.id.close);
+        cancelSearch.setVisibility(View.GONE);
 
         View.OnClickListener vow=new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(v==novo){
-                    cambiarTa(novo,dive,tren,arto,sayens,yey);
-                    loadining();
-                }else if(v==dive){
-                    cambiarTa(dive,novo,tren,arto,sayens,yey);
-                    loadining("entretenimiento");
-                }else if(v==tren){
-                    cambiarTa(tren,dive,novo,arto,sayens,yey);
-                    loadining("tendencias");
-                }else if(v==arto){
-                    cambiarTa(arto,dive,novo,tren,sayens,yey);
-                    loadining("arte");
-                }else if(v==sayens){
-                    cambiarTa(sayens,arto,dive,novo,tren,yey);
-                    loadining("ciencia");
-                }else if(v==yey){
-                    cambiarTa(yey,arto,dive,novo,tren,sayens);
-                    loadining("interfaz");
-                }else if(v==claus){
-                    puf.reset();
-                    edt.clearAnimation();
-                    edt.setAnimation(puf);
+                if(v == recentNews){
+                    changeSize(recentNews, entretainmentNews, trendNews, artNews, scienceNews, localNews);
+                    loadingData();
+                }else if(v == entretainmentNews){
+                    changeSize(entretainmentNews, recentNews, trendNews, artNews, scienceNews, localNews);
+                    loadingData("entretenimiento");
+                }else if(v == trendNews){
+                    changeSize(trendNews, entretainmentNews, recentNews, artNews, scienceNews, localNews);
+                    loadingData("tendencias");
+                }else if(v == artNews){
+                    changeSize(artNews, entretainmentNews, recentNews, trendNews, scienceNews, localNews);
+                    loadingData("arte");
+                }else if(v == scienceNews){
+                    changeSize(scienceNews, artNews, entretainmentNews, recentNews, trendNews, localNews);
+                    loadingData("ciencia");
+                }else if(v == localNews){
+                    changeSize(localNews, artNews, entretainmentNews, recentNews, trendNews, scienceNews);
+                    loadingData("interfaz");
+                }else if(v == cancelSearch){
+                    fade.reset();
+                    searchBar.clearAnimation();
+                    searchBar.setAnimation(fade);
 
-                    edt.setText("");
-                    edt.removeTextChangedListener(tw);
-                    edt.setEnabled(false);
-                    edt.setWidth(0);
+                    searchBar.setText("");
+                    searchBar.removeTextChangedListener(tw);
+                    searchBar.setEnabled(false);
+                    searchBar.setWidth(0);
 
-                    puf.reset();
-                    claus.clearAnimation();
-                    claus.setAnimation(puf);
+                    fade.reset();
+                    cancelSearch.clearAnimation();
+                    cancelSearch.setAnimation(fade);
 
-                    claus.setVisibility(View.GONE);
-                    mi.setEnabled(true);
+                    cancelSearch.setVisibility(View.GONE);
+                    menu.setEnabled(true);
                     getSupportActionBar().setTitle("Revista Interfaz");
 
-                    loadining();
-                }else if(v==edt){
-                    if(edt.getText().toString().equals("Buscar")){
-                        edt.setText("");
+                    loadingData();
+                }else if(v == searchBar){
+                    if(searchBar.getText().toString().equals("Buscar")){
+                        searchBar.setText("");
                     }
                 }
             }
         };
 
-        novo.setOnClickListener(vow);
-        dive.setOnClickListener(vow);
-        tren.setOnClickListener(vow);
-        arto.setOnClickListener(vow);
-        sayens.setOnClickListener(vow);
-        yey.setOnClickListener(vow);
-        claus.setOnClickListener(vow);
-        edt.setOnClickListener(vow);
+        recentNews.setOnClickListener(vow);
+        entretainmentNews.setOnClickListener(vow);
+        trendNews.setOnClickListener(vow);
+        artNews.setOnClickListener(vow);
+        scienceNews.setOnClickListener(vow);
+        localNews.setOnClickListener(vow);
+        cancelSearch.setOnClickListener(vow);
+        searchBar.setOnClickListener(vow);
     }
 
-    private void cambiarTa(TextView selc,TextView nyui,TextView nyui2,TextView nyui3,TextView nyui4,TextView nyui5){
-        selc.setTextSize(30f);
-        nyui.setTextSize(15f);
-        nyui2.setTextSize(15f);
-        nyui3.setTextSize(15f);
-        nyui4.setTextSize(15f);
-        nyui5.setTextSize(15f);
+    private void changeSize(TextView selected, TextView tv1, TextView tv2, TextView tv3, TextView tv4, TextView tv5){
+        selected.setTextSize(30f);
+        tv1.setTextSize(15f);
+        tv2.setTextSize(15f);
+        tv3.setTextSize(15f);
+        tv4.setTextSize(15f);
+        tv5.setTextSize(15f);
     }
 
-    /**         metodo para que al actualizar no c++ en tu data, que lastimosamente ya no voy a usar pero si
-     *          lo voy a reciclar
-     *
-     *      private void getActuali(SQLiteDatabase sqld,String catigory){
-                Cursor ur=sqld.rawQuery(catigory,null);
+    private void loadingData() {
+        RequestQueue request = Volley.newRequestQueue(this);
 
-                List<nius> suin= new ArrayList<nius>();
-
-                 if(ur.moveToFirst()){
-                     String ti,subt,niuses,dei,donde,aqui;
-
-                     do{
-                         ti=ur.getString(ur.getColumnIndex("Titulo"));
-                         subt=ur.getString(ur.getColumnIndex("Subtitulo"));
-                         niuses=ur.getString(ur.getColumnIndex("Noticia"));
-                         dei=ur.getString(ur.getColumnIndex("Fecha"));
-                         aqui=ur.getString(ur.getColumnIndex("Categoria"));
-                         donde=ur.getString(ur.getColumnIndex("Imagen"));
-
-                         suin.add(new nius(ti,subt,niuses,dei,aqui,donde));
-                     } while(ur.moveToNext());
-                 }
-
-                 nuev.clear();
-                 nuev=suin;
-
-                 ArrayAdapter<nius> ne=new custom();
-                 aja.setAdapter(ne);
-            }
-    **/
-
-    private void loadining(){
-        RequestQueue requ= Volley.newRequestQueue(this);
-
-        JsonObjectRequest jobs=new JsonObjectRequest(Request.Method.GET,
+        JsonObjectRequest jobs = new JsonObjectRequest(Request.Method.GET,
                 "https://revistainterfazgq.000webhostapp.com/scripts/guet.php",
                 null,
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
                         try {
-                            JSONArray jara=response.getJSONArray("news");
-                            String taitai,subtaitai,deit,cateo,noti,ima;
-                            List<nius> suin= new ArrayList<nius>();
+                            JSONArray jsonArr = response.getJSONArray("news");
+                            String title, subtitle, detail, category, content, img;
+                            List<Notice> notices = new ArrayList<>();
 
-                            for(int i=0;i<jara.length();i++){
-                                JSONObject gor=jara.getJSONObject(i);
+                            for(int i = 0; i < jsonArr.length(); i++){
+                                JSONObject jObj = jsonArr.getJSONObject(i);
 
-                                taitai=gor.getString("Titulo");
-                                subtaitai=gor.getString("Subtitulo");
-                                deit=gor.getString("Fecha");
-                                cateo=gor.getString("Categoria");
-                                noti=gor.getString("Noticia");
-                                ima=gor.getString("Imagen");
+                                title = jObj.getString("Titulo");
+                                subtitle = jObj.getString("Subtitulo");
+                                detail = jObj.getString("Fecha");
+                                category = jObj.getString("Categoria");
+                                content = jObj.getString("Noticia");
+                                img = jObj.getString("Imagen");
 
-                                suin.add(new nius(taitai,subtaitai,deit,cateo,noti,ima));
+                                notices.add(new Notice(title, subtitle, detail, category, content, img));
                             }
 
-                            nuev.clear();
-                            nuev=suin;
+                            noticeList.clear();
+                            noticeList = notices;
 
-                            ArrayAdapter<nius> an=new custom();
-                            aja.setAdapter(an);
+                            ArrayAdapter<Notice> an = new customComponent();
+                            dailyFeed.setAdapter(an);
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
@@ -357,43 +317,43 @@ public class MainActivity extends AppCompatActivity {
                     }
                 });
 
-        requ.add(jobs);
+        request.add(jobs);
     }
 
-    private void loadining(final String condishon){
-        RequestQueue requ= Volley.newRequestQueue(this);
+    private void loadingData(final String condition) {
+        RequestQueue request = Volley.newRequestQueue(this);
 
-        JsonObjectRequest jobs=new JsonObjectRequest(Request.Method.GET,
+        JsonObjectRequest jobs = new JsonObjectRequest(Request.Method.GET,
                 "https://revistainterfazgq.000webhostapp.com/scripts/guet.php",
                 null,
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
                         try {
-                            JSONArray jara=response.getJSONArray("news");
-                            String taitai,subtaitai,deit,cateo,noti,ima;
-                            List<nius> suin= new ArrayList<nius>();
+                            JSONArray jsonArr = response.getJSONArray("news");
+                            String title, subtitle, detail, category, content, img;
+                            List<Notice> notices = new ArrayList<>();
 
-                            for(int i=0;i<jara.length();i++){
-                                JSONObject gor=jara.getJSONObject(i);
+                            for(int i = 0; i < jsonArr.length(); i++){
+                                JSONObject jObj = jsonArr.getJSONObject(i);
 
-                                taitai=gor.getString("Titulo");
-                                subtaitai=gor.getString("Subtitulo");
-                                deit=gor.getString("Fecha");
-                                cateo=gor.getString("Categoria");
-                                noti=gor.getString("Noticia");
-                                ima=gor.getString("Imagen");
+                                title = jObj.getString("Titulo");
+                                subtitle = jObj.getString("Subtitulo");
+                                detail = jObj.getString("Fecha");
+                                category = jObj.getString("Categoria");
+                                content = jObj.getString("Noticia");
+                                img = jObj.getString("Imagen");
 
-                                if(cateo.equalsIgnoreCase(condishon)){
-                                    suin.add(new nius(taitai,subtaitai,deit,cateo,noti,ima));
+                                if(category.equalsIgnoreCase(condition)){
+                                    notices.add(new Notice(title, subtitle, detail, category, content, img));
                                 }
                             }
 
-                            nuev.clear();
-                            nuev=suin;
+                            noticeList.clear();
+                            noticeList = notices;
 
-                            ArrayAdapter<nius> an=new custom();
-                            aja.setAdapter(an);
+                            ArrayAdapter<Notice> an = new customComponent();        //Array of notices
+                            dailyFeed.setAdapter(an);
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
@@ -406,29 +366,29 @@ public class MainActivity extends AppCompatActivity {
                     }
                 });
 
-        requ.add(jobs);
+        request.add(jobs);
     }
 
-    private class custom extends ArrayAdapter<nius>{
-        public custom() {
-            super(MainActivity.this,R.layout.base_mini,nuev);
+    private class customComponent extends ArrayAdapter<Notice>{
+        public customComponent() {
+            super(MainActivity.this,R.layout.base_mini, noticeList);
         }
 
         public View getView(int position, View convertView, ViewGroup parent) {
 
-            if(convertView==null){
-                convertView=getLayoutInflater().inflate(R.layout.base_mini,parent,false);
+            if(convertView == null){
+                convertView = getLayoutInflater().inflate(R.layout.base_mini,parent,false);
             }
 
-            nius ni=nuev.get(position);
+            Notice n = noticeList.get(position);
 
-            ImageView awebo = (ImageView) convertView.findViewById(R.id.qli);
-            TextView t = (TextView) convertView.findViewById(R.id.titu);
-            TextView t2 = (TextView) convertView.findViewById(R.id.subtitu);
+            ImageView preview = (ImageView) convertView.findViewById(R.id.qli);
+            TextView tw = (TextView) convertView.findViewById(R.id.titu);
+            TextView tw2 = (TextView) convertView.findViewById(R.id.subtitu);
 
-            Picasso.with(MainActivity.this).load(ni.getPata()).into(awebo);
-            t.setText(ni.getTit());
-            t2.setText(ni.getmimid());
+            Picasso.with(MainActivity.this).load(n.getImgPath()).into(preview);
+            tw.setText(n.getTitle());
+            tw2.setText(n.getDescription());
 
             return convertView;
         }

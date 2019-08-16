@@ -8,43 +8,43 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 
-public class spla extends AppCompatActivity{
+public class SplashScreen extends AppCompatActivity{
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.splat);
 
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
-        animat();
+        animate();
     }
 
-    private void animat(){
-        Animation anni= AnimationUtils.loadAnimation(this,R.anim.alpha);
-        anni.reset();
+    private void animate(){
+        Animation anim = AnimationUtils.loadAnimation(this, R.anim.alpha);
+        anim.reset();
 
         ImageView iv = (ImageView) findViewById(R.id.shinin);
         iv.clearAnimation();
-        iv.setAnimation(anni);
+        iv.setAnimation(anim);
 
         Thread tf=new Thread(){
             @Override
             public void run() {
                 try{
-                    int whait=0;
+                    int delay = 0;
 
-                    while (whait<1500){
+                    while (delay < 1500){
                         sleep(100);
-                        whait+=100;
+                        delay += 100;
                     }
 
-                    Intent nt=new Intent().setClass(spla.this,MainActivity.class);
-                    nt.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
-                    startActivity(nt);
+                    Intent in = new Intent().setClass(SplashScreen.this, MainActivity.class);
+                    in.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                    startActivity(in);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 } finally {
-                    spla.this.finish();
+                    SplashScreen.this.finish();
                 }
             }
         };
