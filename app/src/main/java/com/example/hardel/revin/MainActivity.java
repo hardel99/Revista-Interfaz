@@ -61,16 +61,16 @@ public class MainActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_main);
 
-        searchBar = (EditText) findViewById(R.id.search_textbox);
+        searchBar = findViewById(R.id.search_textbox);
         searchBar.setEnabled(false);
 
         filterCategories();
-        dailyFeed = (ListView) findViewById(R.id.news_list);
+        dailyFeed = findViewById(R.id.news_list);
 
         resize = AnimationUtils.loadAnimation(this,R.anim.alpha);
         fade = AnimationUtils.loadAnimation(this,R.anim.fade);
 
-        Toolbar t = (Toolbar) findViewById(R.id.main_toolbar);
+        Toolbar t = findViewById(R.id.main_toolbar);
         setSupportActionBar(t);
         getSupportActionBar().setTitle("Revista Interfaz");
         t.setTitleTextColor(Color.WHITE);
